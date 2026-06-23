@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>QuotePilot Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@400;600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-teal { box-shadow: 0 0 4px 0 rgba(0, 220, 229, 0.3); }
+        .glow-amber { box-shadow: 0 0 4px 0 rgba(255, 186, 67, 0.3); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0c141f; }
+        ::-webkit-scrollbar-thumb { background: #30363D; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #444D56; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#ffba43",
+                        "on-surface": "#dce2f3",
+                        "on-surface-variant": "#b9caca",
+                        "tertiary-container": "#ffd79e",
+                        "tertiary-fixed": "#ffddaf",
+                        "inverse-primary": "#00696e",
+                        "secondary": "#adc6ff",
+                        "inverse-surface": "#dce2f3",
+                        "tertiary": "#fff9f5",
+                        "surface-container-high": "#232a36",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#002021",
+                        "surface-tint": "#00dce5",
+                        "on-error": "#690005",
+                        "secondary-container": "#0566d9",
+                        "background": "#0c141f",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "surface-container": "#19202b",
+                        "on-tertiary-container": "#835900",
+                        "outline-variant": "#3a494a",
+                        "on-secondary": "#002e6a",
+                        "on-tertiary-fixed": "#281800",
+                        "primary": "#e9feff",
+                        "on-secondary-fixed": "#001a42",
+                        "surface-bright": "#323946",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#003739",
+                        "on-secondary-container": "#e6ecff",
+                        "surface-container-highest": "#2e3541",
+                        "primary-fixed-dim": "#00dce5",
+                        "surface-container-low": "#151c27",
+                        "on-tertiary-fixed-variant": "#614000",
+                        "surface": "#0c141f",
+                        "on-primary-container": "#006c71",
+                        "primary-container": "#00f5ff",
+                        "inverse-on-surface": "#2a313d",
+                        "surface-container-lowest": "#070e19",
+                        "on-primary-fixed-variant": "#004f53",
+                        "surface-dim": "#0c141f",
+                        "primary-fixed": "#63f7ff",
+                        "on-background": "#dce2f3",
+                        "outline": "#849495",
+                        "on-tertiary": "#432c00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "panel-split": "45%",
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "gutter": "16px",
+                        "sidebar-width": "240px",
+                        "container-max": "1440px",
+                        "stack-xs": "4px",
+                        "margin-page": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Geist"],
+                        "body-sm": ["Geist"],
+                        "body-md": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "display-lg": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "label-md": ["JetBrains Mono"],
+                        "label-xs": ["JetBrains Mono"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-hidden">
+<!-- Side Navigation Shell -->
+<nav class="docked fixed left-0 top-0 h-full w-[240px] flex flex-col h-full py-gutter px-stack-md bg-surface border-r border-outline-variant z-50">
+<div class="mb-10">
+<h1 class="font-headline-md text-headline-md font-bold text-primary-fixed-dim">QuotePilot</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">AI Approval Engine</p>
+</div>
+<div class="space-y-2 flex-grow">
+<a class="flex items-center gap-3 px-3 py-2 transition-colors duration-200 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high group" href="#">
+<span class="material-symbols-outlined text-[20px]">inbox</span>
+<span class="font-label-md text-label-md">Inbox</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 transition-colors duration-200 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high group" href="#">
+<span class="material-symbols-outlined text-[20px]">send_and_archive</span>
+<span class="font-label-md text-label-md">Sent Quotes</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 transition-colors duration-200 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high group" href="#">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+<span class="font-label-md text-label-md">Knowledge Base</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 transition-colors duration-200 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high group" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+<button class="mt-4 bg-primary-fixed-dim text-on-primary-fixed font-headline-sm text-headline-sm py-2 px-4 rounded transition-all active:scale-[0.99] active:opacity-80">
+            New Quote
+        </button>
+<div class="mt-auto pt-6 border-t border-outline-variant">
+<div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">token</span>
+<span class="font-label-md text-label-md">Usage: 84% Tokens</span>
+</div>
+</div>
+</nav>
+<!-- Top App Bar Shell -->
+<header class="docked sticky top-0 w-full z-40 flex justify-between items-center h-16 px-gutter ml-[240px] bg-surface/80 backdrop-blur-md border-b border-outline-variant pr-[260px]">
+<div class="flex items-center gap-8">
+<span class="font-headline-sm text-headline-sm font-extrabold text-on-surface">Dashboard</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all" href="#">Analytics</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all" href="#">Team</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<button class="font-label-md text-label-md text-on-surface px-4 py-1.5 border border-outline-variant rounded hover:bg-surface-container-high transition-all">Edit Draft</button>
+<button class="font-label-md text-label-md bg-primary-fixed-dim text-on-primary-fixed px-4 py-1.5 rounded transition-all active:scale-95">Approve Quote</button>
+</div>
+<div class="flex items-center gap-3 ml-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] h-[calc(100vh-64px)] flex overflow-hidden">
+<!-- Left Panel: Inquiry List (35%) -->
+<section class="w-[35%] border-r border-outline-variant flex flex-col bg-surface-container-low">
+<div class="p-gutter border-b border-outline-variant flex justify-between items-center bg-surface">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Inquiries</h2>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+<span class="font-label-md text-label-md">Sorted by Priority</span>
+</div>
+</div>
+<div class="flex-grow overflow-y-auto">
+<!-- Inquiry Cards -->
+<!-- Active Card: Sarah -->
+<div class="p-gutter border-b border-outline-variant bg-surface-container-highest cursor-pointer border-r-2 border-primary transition-all relative">
+<div class="flex justify-between items-start mb-2">
+<span class="font-headline-sm text-headline-sm text-on-surface">Sarah (Bloom Bakery)</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">12m ago</span>
+</div>
+<p class="text-on-surface-variant line-clamp-1 mb-3">Hi! I'm looking to build an e-commerce site for my bakery...</p>
+<div class="flex items-center gap-2">
+<span class="bg-tertiary-fixed-dim/10 border border-tertiary-fixed-dim text-tertiary-fixed-dim px-2 py-0.5 rounded-full font-label-xs text-label-xs glow-amber uppercase tracking-wider">Needs your approval</span>
+</div>
+</div>
+<!-- Mark -->
+<div class="p-gutter border-b border-outline-variant hover:bg-surface-container-high cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="font-headline-sm text-headline-sm text-on-surface">Mark (TechNova)</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">45m ago</span>
+</div>
+<p class="text-on-surface-variant line-clamp-1 mb-3">Looking for a quote on a SaaS platform overhaul including...</p>
+<div class="flex items-center gap-2">
+<span class="bg-primary-fixed-dim/10 border border-primary-fixed-dim text-primary-fixed-dim px-2 py-0.5 rounded-full font-label-xs text-label-xs glow-teal uppercase tracking-wider">Drafting</span>
+</div>
+</div>
+<!-- Julia -->
+<div class="p-gutter border-b border-outline-variant hover:bg-surface-container-high cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="font-headline-sm text-headline-sm text-on-surface">Julia (Zen Yoga)</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">2h ago</span>
+</div>
+<p class="text-on-surface-variant line-clamp-1 mb-3">Can we adjust the booking module to allow for recurring...</p>
+<div class="flex items-center gap-2">
+<span class="border border-secondary text-secondary px-2 py-0.5 rounded-full font-label-xs text-label-xs uppercase tracking-wider">Waiting on client</span>
+</div>
+</div>
+<!-- Alex -->
+<div class="p-gutter border-b border-outline-variant hover:bg-surface-container-high cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="font-headline-sm text-headline-sm text-on-surface">Alex (DevStream)</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">4h ago</span>
+</div>
+<p class="text-on-surface-variant line-clamp-1 mb-3">Need clarification on the API documentation requirements...</p>
+<div class="flex items-center gap-2">
+<span class="bg-secondary-container/20 border border-secondary text-on-secondary-container px-2 py-0.5 rounded-full font-label-xs text-label-xs uppercase tracking-wider">Clarifying</span>
+</div>
+</div>
+<!-- Sam -->
+<div class="p-gutter border-b border-outline-variant hover:bg-surface-container-high cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="font-headline-sm text-headline-sm text-on-surface">Sam (Retro Games)</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Yesterday</span>
+</div>
+<p class="text-on-surface-variant line-clamp-1 mb-3">Inquiry regarding a classic arcade rental system portal...</p>
+<div class="flex items-center gap-2">
+<span class="bg-outline-variant/20 border border-outline-variant text-on-surface-variant px-2 py-0.5 rounded-full font-label-xs text-label-xs uppercase tracking-wider">New</span>
+</div>
+</div>
+<!-- Elena -->
+<div class="p-gutter border-b border-outline-variant hover:bg-surface-container-high cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="font-headline-sm text-headline-sm text-on-surface">Elena (CloudScale)</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">2d ago</span>
+</div>
+<p class="text-on-surface-variant line-clamp-1 mb-3">Cloud migration strategy quote request for Q3 roadmap...</p>
+<div class="flex items-center gap-2">
+<span class="bg-error/10 border border-error text-error px-2 py-0.5 rounded-full font-label-xs text-label-xs uppercase tracking-wider">Failed</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Detail View (65%) -->
+<section class="w-[65%] flex flex-col bg-background relative overflow-hidden">
+<!-- Animated Background Shader Subtle -->
+<div class="flex-grow overflow-y-auto relative z-10 p-gutter"><!-- 1. Header -->
+<div class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-primary-fixed-dim">person</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-display-lg text-display-lg text-on-surface">Alex (DevStream)</h2>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px] cursor-pointer hover:text-primary transition-colors">mail</span>
+</div>
+<p class="text-on-surface-variant font-label-md">Received 4 hours ago via Email</p>
+</div>
+</div>
+<span class="border border-secondary text-secondary px-4 py-1 rounded-full font-label-md uppercase tracking-wider">Waiting on client</span>
+</div>
+<!-- 2. Original Message -->
+<div class="mb-10">
+<h3 class="font-label-md text-label-md uppercase text-on-surface-variant mb-3 tracking-widest">Original Message</h3>
+<div class="bg-surface-container p-6 border-l-4 border-primary rounded-r-lg">
+<blockquote class="italic text-on-surface text-lg leading-relaxed">
+            "hey do you make apps? how much"
+        </blockquote>
+</div>
+</div>
+<!-- 3. Agent Asked Card -->
+<div class="mb-10">
+<h3 class="font-label-md text-label-md uppercase text-on-surface-variant mb-4 tracking-widest">Agent Intelligence Analysis</h3>
+<div class="bg-surface p-6 border border-outline-variant rounded-lg">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary-fixed-dim">question_answer</span>
+<h4 class="font-headline-sm text-on-surface">Clarifying Questions</h4>
+</div>
+<ul class="space-y-4 mb-6">
+<li class="flex items-start gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary-fixed-dim text-[18px] mt-0.5">help</span>
+<span>What kind of app are you looking to build (mobile, web, or both)?</span>
+</li>
+<li class="flex items-start gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary-fixed-dim text-[18px] mt-0.5">help</span>
+<span>Do you have an existing brand or design assets, or are we starting from scratch?</span>
+</li>
+<li class="flex items-start gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary-fixed-dim text-[18px] mt-0.5">help</span>
+<span>What's your target launch date or a rough timeline you're aiming for?</span>
+</li>
+</ul>
+<div class="pt-4 border-t border-outline-variant">
+<p class="text-label-xs text-on-surface-variant italic">Sent 4 hours ago via email</p>
+</div>
+</div>
+</div>
+<!-- 4. Muted Empty State -->
+<div class="flex flex-col items-center justify-center py-12 text-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[48px] mb-4 opacity-20">hourglass_empty</span>
+<p class="text-on-surface-variant max-w-xs">
+        Waiting for the client's reply — the agent will resume automatically.
+    </p>
+<button class="mt-6 font-label-md text-label-md text-on-surface px-6 py-2 border border-outline-variant rounded hover:border-primary transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">notification_important</span>
+        Nudge client
+    </button>
+</div></div>
+<!-- 6. Sticky Bottom Action Bar -->
+<div class="absolute bottom-0 left-0 w-full p-6 bg-surface/90 backdrop-blur-xl border-t border-outline-variant z-20 flex justify-between items-center"><div class="flex items-center gap-4">
+<button class="bg-transparent text-on-surface border border-outline-variant hover:border-primary px-6 py-2.5 rounded font-headline-sm transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">notification_important</span>
+        Nudge client
+    </button>
+</div>
+<button class="bg-transparent text-on-surface-variant hover:text-error px-6 py-2.5 rounded font-headline-sm transition-all active:scale-95">
+    Cancel inquiry
+</button></div>
+</section>
+</main>
+<!-- Floating Action Button Contextual (Hidden on Dashboard as per Rules) -->
+<!-- The prompt asks for a dashboard, shell visible. FAB suppressed for dashboard/detail view focus. -->
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button, a, div[cursor-pointer]').forEach(el => {
+            el.addEventListener('click', () => {
+                // Add a small scale effect manually for those without tailwind classes
+                el.classList.add('scale-95');
+                setTimeout(() => el.classList.remove('scale-95'), 100);
+            });
+        });
+    </script>
+</body></html>

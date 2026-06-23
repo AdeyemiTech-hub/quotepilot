@@ -14,6 +14,8 @@ import {
   assertTransition,
   type InquiryStatus,
 } from "../agent/state-machine";
+import { renderQuotePdf } from "../tools/pdf";
+import { sendEmail } from "../tools/email";
 
 type Retrieved = Awaited<ReturnType<typeof retrieveSimilarWork>>;
 
@@ -78,6 +80,18 @@ function buildClarificationHistory(
       return `Consultant asked:\n${qs}\nClient replied:\n${r.response_text}`;
     })
     .join("\n\n");
+}
+
+// The agent's only channel to a real client — fail loudly (throw) rather
+// than silently skip the email when there's no one to send it to.
+async function loadClient(
+  clientId: string | null
+): Promise<{ name: string | null; email: string }> {
+  if (!clientId) throw new Error("inquiry has no associated client");
+  const res = await pool.query(`SELECT name, email FROM clients WHERE id = $1`, [clientId]);
+  const row = res.rows[0];
+  if (!row?.email) throw new Error("client has no email on file");
+  return row;
 }
 
 async function nextVersion(inquiryId: string): Promise<number> {
@@ -234,10 +248,36 @@ export async function tick(inquiry: InquiryRow): Promise<void> {
           id,
           "clarify",
           usage.model,
-          "clarification ready (email stub)",
+          `clarification drafted: ${questions.length} questions`,
           { questions },
           usage
         );
+
+        const client = await loadClient(inquiry.client_id);
+        const greeting = client.name ? `Hi ${client.name},` : "Hi there,";
+        const questionList = questions.map((q) => `- ${q}`).join("\n");
+        let mailResult: { stubbed?: boolean };
+        try {
+          mailResult = await sendEmail({
+            to: client.email,
+            subject: "Quick questions about your project",
+            text:
+              `${greeting}\n\n` +
+              `Thanks for reaching out — to put together an accurate quote, could you help me with a couple of quick questions?\n\n` +
+              `${questionList}\n\n` +
+              `Looking forward to hearing back.\n\nBest,\nAdeyemiTech`,
+          });
+        } catch (err) {
+          throw new Error(`clarification email send failed: ${(err as Error).message}`);
+        }
+        await logEvent(
+          id,
+          "email",
+          null,
+          mailResult.stubbed ? "clarification email stubbed" : "clarification email sent",
+          { to: client.email, questions }
+        );
+
         await setStatus(inquiry, "awaiting_client");
         break;
       }
@@ -315,22 +355,62 @@ export async function tick(inquiry: InquiryRow): Promise<void> {
 
       case "sending": {
         const q = await pool.query(
-          `SELECT id FROM quotes WHERE inquiry_id = $1 ORDER BY version DESC LIMIT 1`,
+          `SELECT version FROM quotes WHERE inquiry_id = $1 ORDER BY version DESC LIMIT 1`,
           [id]
         );
-        const quoteId = q.rows[0]?.id as string | undefined;
-        let pdfUrl: string | null = null;
-        if (quoteId) {
-          pdfUrl = `stub://quotes/${quoteId}.pdf`;
-          await pool.query(`UPDATE quotes SET pdf_url = $1 WHERE id = $2`, [pdfUrl, quoteId]);
+        const version = q.rows[0]?.version as number | undefined;
+        if (version == null) throw new Error("sending: no quote found for inquiry");
+
+        const client = await loadClient(inquiry.client_id);
+        const quote = await loadPreviousQuote(id);
+
+        let pdf: { filePath: string; publicUrl: string };
+        try {
+          pdf = await renderQuotePdf({ id }, client, {
+            version,
+            line_items: quote.line_items,
+            subtotal: quote.subtotal,
+            total: quote.total,
+            assumptions: quote.assumptions,
+            estimated_days: quote.estimated_days,
+            currency: quote.currency,
+          });
+        } catch (err) {
+          throw new Error(`pdf render failed: ${(err as Error).message}`);
+        }
+        await logEvent(id, "pdf", null, `quote pdf rendered (v${version})`, {
+          pdf_url: pdf.publicUrl,
+        });
+
+        const projectSummary = inquiry.requirements
+          ? splitRequirements(inquiry.requirements).requirements.summary
+          : "your project";
+        const bookingUrl = process.env.BOOKING_URL || "#";
+        const greeting = client.name ? `Hi ${client.name},` : "Hi there,";
+
+        let mailResult: { stubbed?: boolean };
+        try {
+          mailResult = await sendEmail({
+            to: client.email,
+            subject: "Your quote is ready",
+            text:
+              `${greeting}\n\n` +
+              `Here is your quote for ${projectSummary}: $${quote.total} total. I've attached the full breakdown as a PDF.\n\n` +
+              `Pick a time for a quick call: ${bookingUrl}\n\n` +
+              `Best,\nAdeyemiTech`,
+            attachmentPath: pdf.filePath,
+          });
+        } catch (err) {
+          throw new Error(`quote email send failed: ${(err as Error).message}`);
         }
         await logEvent(
           id,
-          "send",
+          "email",
           null,
-          "quote email sent (stub) + pdf generated (stub)",
-          { pdf_url: pdfUrl }
+          mailResult.stubbed ? "quote email stubbed" : "quote email sent",
+          { pdf_url: pdf.publicUrl, to: client.email }
         );
+
         await setStatus(inquiry, "sent");
         break;
       }

@@ -8,7 +8,8 @@
     "test:pipeline": "tsx test-pipeline.ts",
     "test:quote": "tsx test-quote.ts",
     "dev": "tsx src/api/server.ts",
-    "test:e2e": "tsx test-e2e.ts"
+    "test:e2e": "tsx test-e2e.ts",
+    "dashboard": "npm run dev --prefix dashboard"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +20,9 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "openai": "^6.42.0",
+    "pdf-lib": "^1.17.1",
     "pg": "^8.21.0",
+    "resend": "^6.12.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {

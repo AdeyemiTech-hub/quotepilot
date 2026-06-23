@@ -2,6 +2,7 @@
 // The HTTP endpoints are the human-in-the-loop surface; the worker drives the
 // state machine. They share one process and one pg pool.
 import "dotenv/config";
+import path from "node:path";
 import express, { type Request, type Response } from "express";
 import cors from "cors";
 import { pool, isConnectionError } from "../lib/db";
@@ -11,6 +12,8 @@ import { WAITING_STATES, type InquiryStatus } from "../agent/state-machine";
 const app = express();
 app.use(cors());
 app.use(express.json());
+// Generated quote PDFs (src/tools/pdf.ts writes here) served at PUBLIC_BASE_URL/files/...
+app.use("/files", express.static(path.join(process.cwd(), "files")));
 
 // Small async wrapper so a thrown error becomes a 500 instead of an unhandled
 // rejection.
